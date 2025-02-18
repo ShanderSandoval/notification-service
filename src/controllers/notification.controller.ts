@@ -11,6 +11,14 @@ export class NotificationController {
     return this.notificationService.create(notification);
   }
 
+  @Post()
+  async handleWebhook(@Body() payload: any, @Headers('x-signature') signature: string | undefined) {
+    if (signature && !this.verifySignature(payload, signature)) {
+      return { message: 'Invalid signature' };
+    }
+    return this.notificationService.create(payload);
+  }
+
   @Get()
   findAll() {
     return this.notificationService.findAll();
@@ -30,4 +38,9 @@ export class NotificationController {
   delete(@Param('id') id: string) {
     return this.notificationService.delete(id);
   }
+
+  private verifySignature(payload: any, signature: string): boolean {
+    return true;
+  }
+
 }
